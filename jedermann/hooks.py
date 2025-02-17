@@ -4,226 +4,91 @@ app_publisher = "Phamos GmbH"
 app_description = "Customisation for Jedermann"
 app_email = "support@phamos.eu"
 app_license = "mit"
-# required_apps = []
+required_apps = ["erpnext"]
+app_logo_url = "/assets/jedermann/img/Jedermann-AG-Favicon.png"
 
-# Includes in <head>
-# ------------------
+website_context = {
+	"favicon": "/assets/jedermann/img/Jedermann-AG-Favicon.png",
+	"splash_image": "/assets/jedermann/img/Jedermann-AG-Favicon.png",
+}
 
-# include js, css files in header of desk.html
-# app_include_css = "/assets/jedermann/css/jedermann.css"
-# app_include_js = "/assets/jedermann/js/jedermann.js"
+doctype_js = {
+    "Sales Order": "public/js/sales_order.js",
+    "Sales Invoice": "public/js/sales_invoice.js",
+    "Delivery Note": "public/js/delivery_note.js",
+}
 
-# include js, css files in header of web template
-# web_include_css = "/assets/jedermann/css/jedermann.css"
-# web_include_js = "/assets/jedermann/js/jedermann.js"
+override_whitelisted_methods = {
+	"erpnext.stock.get_item_details.get_item_details": "jedermann.events.utils.custom_get_item_details"
+}
 
-# include custom scss in every website theme (without file extension ".scss")
-# website_theme_scss = "jedermann/public/scss/website"
+doc_events = {
+    "Sales Invoice": {
+        "validate": "jedermann.events.sales_invoice.set_validate_dn_data"
+    },
+    "Product Bundle": {
+        "validate": "jedermann.events.product_bundle.validate_left_right_pair_item"
+    }
+}
 
-# include js, css files in header of web form
-# webform_include_js = {"doctype": "public/js/doctype.js"}
-# webform_include_css = {"doctype": "public/css/doctype.css"}
+override_doctype_class = {
+	"Sales Order": "jedermann.events.sales_order.CustomSalesOrder",
+	"Sales Invoice": "jedermann.events.sales_invoice.CustomSalesInvoice",
+    "Delivery Note": "jedermann.events.delivery_note.CustomDeliveryNote"
+}
 
-# include js in page
-# page_js = {"page" : "public/js/file.js"}
+fixtures = [
+    {
+        "dt": "Letter Head", "filters": [
+        [
+            "name", "in", [
+                "Standard 1.1"
+            ]
+        ]
+    ]},
+    {
+        "dt": "Role", "filters": [
+        [
+            "name", "in", [
+                "0 Geschäftsleitung"
+            ]
+        ]
+    ]},
+    {
+        "dt": "Custom DocPerm", "filters": [
+        [
+            "role", "=", "0 Geschäftsleitung"
+        ]
+    ]},
+    {
+        "dt": "Print Settings"
+    },
+    {"dt": "Property Setter", "filters": [
+        [
+            "module", "=", "Jedermann"
+        ]
+    ]},
+    {
+        "dt": "Translation", "filters": [
+        [
+            "source_text", "in", [
+                "Sort by Sales Order",
+                "Sort by Item Code",
+                "Sorting Option",
+                "Batch Number",
+                "Pallet Number",
+                "Intern",
+                "Supplier Quote Reference"
+            ]
+        ]
+    ]}
+]
 
-# include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
-# doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
-# doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
-# doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
-
-# Svg Icons
-# ------------------
-# include app icons in desk
-# app_include_icons = "jedermann/public/icons.svg"
-
-# Home Pages
-# ----------
-
-# application home page (will override Website Settings)
-# home_page = "login"
-
-# website user home page (by Role)
-# role_home_page = {
-# 	"Role": "home_page"
-# }
-
-# Generators
-# ----------
-
-# automatically create page for each record of this doctype
-# website_generators = ["Web Page"]
-
-# Jinja
-# ----------
-
-# add methods and filters to jinja environment
-# jinja = {
-# 	"methods": "jedermann.utils.jinja_methods",
-# 	"filters": "jedermann.utils.jinja_filters"
-# }
-
-# Installation
-# ------------
-
-# before_install = "jedermann.install.before_install"
-# after_install = "jedermann.install.after_install"
-
-# Uninstallation
-# ------------
-
-# before_uninstall = "jedermann.uninstall.before_uninstall"
-# after_uninstall = "jedermann.uninstall.after_uninstall"
-
-# Integration Setup
-# ------------------
-# To set up dependencies/integrations with other apps
-# Name of the app being installed is passed as an argument
-
-# before_app_install = "jedermann.utils.before_app_install"
-# after_app_install = "jedermann.utils.after_app_install"
-
-# Integration Cleanup
-# -------------------
-# To clean up dependencies/integrations with other apps
-# Name of the app being uninstalled is passed as an argument
-
-# before_app_uninstall = "jedermann.utils.before_app_uninstall"
-# after_app_uninstall = "jedermann.utils.after_app_uninstall"
-
-# Desk Notifications
-# ------------------
-# See frappe.core.notifications.get_notification_config
-
-# notification_config = "jedermann.notifications.get_notification_config"
-
-# Permissions
-# -----------
-# Permissions evaluated in scripted ways
-
-# permission_query_conditions = {
-# 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
-# }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
-
-# DocType Class
-# ---------------
-# Override standard doctype classes
-
-# override_doctype_class = {
-# 	"ToDo": "custom_app.overrides.CustomToDo"
-# }
-
-# Document Events
-# ---------------
-# Hook on document methods and events
-
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
-
-# Scheduled Tasks
-# ---------------
-
-# scheduler_events = {
-# 	"all": [
-# 		"jedermann.tasks.all"
-# 	],
-# 	"daily": [
-# 		"jedermann.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"jedermann.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"jedermann.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"jedermann.tasks.monthly"
-# 	],
-# }
-
-# Testing
-# -------
-
-# before_tests = "jedermann.install.before_tests"
-
-# Overriding Methods
-# ------------------------------
-#
-# override_whitelisted_methods = {
-# 	"frappe.desk.doctype.event.event.get_events": "jedermann.event.get_events"
-# }
-#
-# each overriding function accepts a `data` argument;
-# generated from the base implementation of the doctype dashboard,
-# along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "jedermann.task.get_dashboard_data"
-# }
-
-# exempt linked doctypes from being automatically cancelled
-#
-# auto_cancel_exempted_doctypes = ["Auto Repeat"]
-
-# Ignore links to specified DocTypes when deleting documents
-# -----------------------------------------------------------
-
-# ignore_links_on_delete = ["Communication", "ToDo"]
-
-# Request Events
-# ----------------
-# before_request = ["jedermann.utils.before_request"]
-# after_request = ["jedermann.utils.after_request"]
-
-# Job Events
-# ----------
-# before_job = ["jedermann.utils.before_job"]
-# after_job = ["jedermann.utils.after_job"]
-
-# User Data Protection
-# --------------------
-
-# user_data_fields = [
-# 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
-# 		"partial": 1,
-# 	},
-# 	{
-# 		"doctype": "{doctype_3}",
-# 		"strict": False,
-# 	},
-# 	{
-# 		"doctype": "{doctype_4}"
-# 	}
-# ]
-
-# Authentication and authorization
-# --------------------------------
-
-# auth_hooks = [
-# 	"jedermann.auth.validate"
-# ]
-
-# Automatically update python controller files with type annotations for this app.
-# export_python_type_annotations = True
-
-# default_log_clearing_doctypes = {
-# 	"Logging DocType Name": 30  # days to retain logs
-# }
-
+jinja = {
+    "methods": [
+        "jedermann.events.jinja_functions.sort_items",
+        "jedermann.events.jinja_functions.get_article_and_description_column_width",
+        "jedermann.events.jinja_functions.get_product_labels",
+        "jedermann.events.jinja_functions.group_items_by_pallet",
+    ]
+}
